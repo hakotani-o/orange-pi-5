@@ -11,7 +11,7 @@ jobs:
 
     
       - name: Show ubuntu details
-      - run: |        
+        run: |        
           sudo apt update
           # sudo apt upgrade -y
           sudo apt install -y build-essential gcc-aarch64-linux-gnu devscripts dctrl-tools   \
