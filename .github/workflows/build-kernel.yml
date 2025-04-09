@@ -22,4 +22,4 @@ jobs:
                 python3-distutils-extra python3-pkg-resources swig libfdt-dev libpython3-dev bison git
                 pwd
                 ls
-                    ./build-kernel
+                    ./build-kernel.sh
