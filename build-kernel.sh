@@ -24,8 +24,8 @@ now=`cat linux-next/localversion-next|sed 's/-next-//'`
 rm 	linux-next/localversion-next
 head -5 linux-next/Makefile | sed 's# ##g' > ./tmp_var.txt
 cd linux-next # 
-patch -p1 < ../../overlay/opp
-patch -p1 < ../../orangepi-5-plus-patch/rk3588-orangepi-5-plus-led.txt
+
+
 . ./tmp_var.txt
 
 cp ../../overlay/nconfig.sh . && ./nconfig.sh
