@@ -15,6 +15,6 @@ jobs:
                 debootstrap flex libssl-dev bc rsync kmod cpio xz-utils fakeroot parted            \
                 udev dosfstools uuid-runtime git-lfs device-tree-compiler python3 dctrl-tools      \
                 python-is-python3 fdisk bc debhelper python3-pyelftools python3-setuptools         \
-                python3-distutils-extra python3-pkg-resources swig libfdt-dev libpython3-dev bison
+                python3-distutils-extra python3-pkg-resources swig libfdt-dev libpython3-dev bison git
                 - uses: actions/checkout@v4
                     ./build-kernel
