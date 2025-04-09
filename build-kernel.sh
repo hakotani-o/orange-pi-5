@@ -19,7 +19,7 @@ fi
 cd $linux_dir
 
 git clone --depth 1 https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
-
+cp ../1-config.txt linux-next/.config
 now=`cat linux-next/localversion-next|sed 's/-next-//'`
 rm 	linux-next/localversion-next
 head -5 linux-next/Makefile | sed 's# ##g' > ./tmp_var.txt
@@ -28,7 +28,6 @@ cd linux-next #
 
 . ../tmp_var.txt
 
-cat arch/arm64/configs/defconfig ../../overley/my-add.txt > .config
 
 	EXTRAVERSION="${EXTRAVERSION}-$now"
 
