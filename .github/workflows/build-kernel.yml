@@ -22,4 +22,5 @@ jobs:
                 python3-distutils-extra python3-pkg-resources swig libfdt-dev libpython3-dev bison git
                 pwd
                 ls
+                uname -a
                  /bin/bash   ./build-kernel.sh arm64
