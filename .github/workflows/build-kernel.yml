@@ -32,3 +32,6 @@ jobs:
           path: arm64
           # The desired behavior if no files are found using the provided path.
           if-no-files-found: error
+          
+      - name: disk
+      - run: fd
