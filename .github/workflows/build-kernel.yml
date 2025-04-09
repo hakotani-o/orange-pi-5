@@ -17,21 +17,13 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - name: Get more disk space
-        uses: jlumbroso/free-disk-space@main
-        with:
-          tool-cache: false
-          android: true
-          dotnet: true
-          haskell: true
-          large-packages: true
-          swap-storage: true
-          
+             
       - uses: actions/checkout@v4
-       - name: Install dependencies
+      
+      
       # Runs a single command using the runners shell
       - name: Run a one-line script
-      shell: bash
+      
         run: |          
           sudo apt update
           sudo apt install -y build-essential gcc-aarch64-linux-gnu devscripts dctrl-tools   \
