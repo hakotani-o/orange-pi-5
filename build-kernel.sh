@@ -30,7 +30,7 @@ cd linux-next #
 
 
 	EXTRAVERSION="${EXTRAVERSION}-$now"
-
+#HOSTCC=x86_64-linux-gnu-gcc
 
 export PACKAGE_RELEASE="$VERSION.$PATCHLEVEL.${SUBLEVEL}$EXTRAVERSION-rockchip"
 export DEBIAN_PACKAGE="kernel-${PACKAGE_RELEASE%%~*}"
@@ -38,7 +38,7 @@ export MAKE="make \
 			ARCH=arm64 \
 			CROSS_COMPILE=aarch64-linux-gnu- \
              CC=aarch64-linux-gnu-gcc \
-             HOSTCC=x86_64-linux-gnu-gcc \
+             HOSTCC=aarch64-linux-gnu-gcc \
              KERNELVERSION=$PACKAGE_RELEASE \
              LOCALVERSION= \
              localver-extra= \
