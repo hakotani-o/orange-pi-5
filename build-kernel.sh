@@ -28,8 +28,7 @@ cd linux-next #
 
 . ../tmp_var.txt
 
-cp ../../overlay/nconfig.sh . && /bin/bash ./nconfig.sh
-
+cat arch/arm64/configs/defconfig ../../overlay/my-add.txt > .config
 
 	EXTRAVERSION="${EXTRAVERSION}-$now"
 
