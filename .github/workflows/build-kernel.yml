@@ -6,7 +6,9 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-    - uses: actions/checkout@v4
+      - name: Checkout
+      - uses: actions/checkout@v4
+
     
       - name: Show ubuntu details
         run: |        
