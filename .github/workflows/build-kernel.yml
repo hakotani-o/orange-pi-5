@@ -20,10 +20,8 @@ jobs:
           udev dosfstools uuid-runtime git-lfs device-tree-compiler python3 dctrl-tools      \
           python-is-python3 fdisk bc debhelper python3-pyelftools python3-setuptools         \
           python3-distutils-extra python3-pkg-resources swig libfdt-dev libpython3-dev bison git
-          pwd
-          ls
-          uname -a
           /bin/bash   ./build-kernel.sh arm64
+          ls
                  
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v4.6.2
