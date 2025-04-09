@@ -37,6 +37,10 @@ cp ../../overlay/nconfig.sh . && ./nconfig.sh
 export PACKAGE_RELEASE="$VERSION.$PATCHLEVEL.${SUBLEVEL}$EXTRAVERSION-rockchip"
 export DEBIAN_PACKAGE="kernel-${PACKAGE_RELEASE%%~*}"
 export MAKE="make \
+			ARCH=arm64 \
+			CROSS_COMPILE=aarch64-linux-gnu- \
+             CC=aarch64-linux-gnu-gcc \
+             HOSTCC=$ARCH_HOST_CC \
              KERNELVERSION=$PACKAGE_RELEASE \
              LOCALVERSION= \
              localver-extra= \
