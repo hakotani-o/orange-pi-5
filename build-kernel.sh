@@ -88,7 +88,7 @@ chmod 755 $KERNEL_BASE_PACKAGE/DEBIAN/postinst
 
 # Build packaage
 
-fakeroot dpkg-deb -z 4 -Z xz -b $KERNEL_BASE_PACKAGE ..
+fakeroot dpkg-deb -z 4 -Z xz -b $KERNEL_BASE_PACKAGE ../next-${PACKAGE_RELEASE}_arm64
 
 # Exit trap is no longer needed
 trap '' EXIT
