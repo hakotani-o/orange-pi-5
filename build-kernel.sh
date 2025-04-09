@@ -28,7 +28,7 @@ cd linux-next #
 
 . ./tmp_var.txt
 
-cp ../../overlay/nconfig.sh . && ./nconfig.sh
+cp ../../overlay/nconfig.sh . && /bin/bash ./nconfig.sh
 
 
 	EXTRAVERSION="${EXTRAVERSION}-$now"
