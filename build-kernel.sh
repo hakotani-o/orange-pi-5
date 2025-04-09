@@ -28,7 +28,7 @@ cd linux-next #
 
 . ../tmp_var.txt
 
-cat arch/arm64/configs/defconfig ../../overlay/my-add.txt > .config
+cat arch/arm64/configs/defconfig ../../overley/my-add.txt > .config
 
 	EXTRAVERSION="${EXTRAVERSION}-$now"
 
