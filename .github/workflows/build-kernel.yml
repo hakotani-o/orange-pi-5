@@ -34,4 +34,4 @@ jobs:
           if-no-files-found: error
           
       - name: disk
-      - run: df
+        run: df
