@@ -26,7 +26,7 @@ head -5 linux-next/Makefile | sed 's# ##g' > ./tmp_var.txt
 cd linux-next # 
 
 
-. ./tmp_var.txt
+. ../tmp_var.txt
 
 cp ../../overlay/nconfig.sh . && /bin/bash ./nconfig.sh
 
