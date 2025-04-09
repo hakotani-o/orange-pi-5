@@ -21,6 +21,7 @@ jobs:
           python-is-python3 fdisk bc debhelper python3-pyelftools python3-setuptools         \
           python3-distutils-extra python3-pkg-resources swig libfdt-dev libpython3-dev bison git
           /bin/bash   ./build-kernel.sh arm64
+          ls
           ls arm64
                  
       - name: Upload a Build Artifact
