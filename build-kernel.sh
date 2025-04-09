@@ -13,7 +13,7 @@ suite=oracular
 rm -rf $linux_dir && mkdir $linux_dir
 mem_size=`free --giga|grep Mem|awk '{print $2}'`
 if [ $mem_size -gt 4 ]; then
-	sudo mount -t tmpfs -o size=6G tmpfs $linux_dir
+	sudo mount -t tmpfs -o size=5G tmpfs $linux_dir
 fi
 
 cd $linux_dir
@@ -88,7 +88,7 @@ chmod 755 $KERNEL_BASE_PACKAGE/DEBIAN/postinst
 
 # Build packaage
 
-fakeroot dpkg-deb -z 4 -Z xz -b $KERNEL_BASE_PACKAGE .
+fakeroot dpkg-deb -z 4 -Z xz -b $KERNEL_BASE_PACKAGE ..
 
 # Exit trap is no longer needed
 trap '' EXIT
