@@ -24,7 +24,7 @@ jobs:
           ls
                  
       - name: Upload a Build Artifact
-        uses: actions/upload-artifact@v4.6.2
+        uses: actions/upload-artifact@v4.5.0
         with:
         # Artifact name
           name: kernel-*.deb
@@ -34,4 +34,4 @@ jobs:
           if-no-files-found: error
           
       - name: disk
-      - run: fd
+      - run: df
