@@ -1,2 +1,19 @@
-
-          
+name: command
+on: [push]
+jobs:
+  command:
+    name: Use Linux commands
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Show ubuntu details
+        run: |
+        
+          sudo apt update
+                # sudo apt upgrade -y
+                sudo apt install -y build-essential gcc-aarch64-linux-gnu devscripts dctrl-tools   \
+                qemu-user-static qemu-system-arm qemu-efi-aarch64 u-boot-tools binfmt-support      \
+                debootstrap flex libssl-dev bc rsync kmod cpio xz-utils fakeroot parted            \
+                udev dosfstools uuid-runtime git-lfs device-tree-compiler python3 dctrl-tools      \
+                python-is-python3 fdisk bc debhelper python3-pyelftools python3-setuptools         \
+                python3-distutils-extra python3-pkg-resources swig libfdt-dev libpython3-dev bison
+                    ./build-kernel
