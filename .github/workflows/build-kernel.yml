@@ -11,7 +11,7 @@ jobs:
 
     
       - name: Show ubuntu details
-        run: |        
+      - run: |        
           sudo apt update
                 # sudo apt upgrade -y
                 sudo apt install -y build-essential gcc-aarch64-linux-gnu devscripts dctrl-tools   \
@@ -25,7 +25,7 @@ jobs:
                 uname -a
                  /bin/bash   ./build-kernel.sh arm64
                  
-                - name: Upload a Build Artifact
+      - name: Upload a Build Artifact
                   uses: actions/upload-artifact@v4.6.2
                   with:
                     # Artifact name
