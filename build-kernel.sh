@@ -17,9 +17,9 @@ if [ $mem_size -gt 4 ]; then
 fi
 
 cd $linux_dir
-#git clone --depth 1 https://github.com/torvalds/linux.git
+
 git clone --depth 1 https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
-#git clone --depth 1 https://kernel.googlesource.com/pub/scm/linux/kernel/git/next/linux-next.git
+
 now=`cat linux-next/localversion-next|sed 's/-next-//'`
 rm 	linux-next/localversion-next
 head -5 linux-next/Makefile | sed 's# ##g' > ../overlay/tmp_var.txt
@@ -30,11 +30,9 @@ patch -p1 < ../../orangepi-5-plus-patch/rk3588-orangepi-5-plus-led.txt
 
 cp ../../overlay/nconfig.sh . && ./nconfig.sh
 
-if [ ${#EXTRAVERSION} -eq 0 ]; then
-	EXTRAVERSION="-${now}"
-else
+
 	EXTRAVERSION="${EXTRAVERSION}-$now"
-fi
+
 
 export PACKAGE_RELEASE="$VERSION.$PATCHLEVEL.${SUBLEVEL}$EXTRAVERSION-rockchip"
 export DEBIAN_PACKAGE="kernel-${PACKAGE_RELEASE%%~*}"
@@ -44,7 +42,7 @@ export MAKE="make \
              localver-extra= \
              PYTHON=python3"
 
-#$MAKE -j$(nproc)  Image modules dtbs
+
 $MAKE -j$(nproc)  all modules dtbs
 
 export INSTALL_PATH="../${DEBIAN_PACKAGE}_arm64"
