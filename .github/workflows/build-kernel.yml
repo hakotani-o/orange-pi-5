@@ -3,11 +3,10 @@ on: [push]
 jobs:
   command:
     name: Use Linux commands
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Show ubuntu details
-        run: |
-        
+        run: |        
           sudo apt update
                 # sudo apt upgrade -y
                 sudo apt install -y build-essential gcc-aarch64-linux-gnu devscripts dctrl-tools   \
