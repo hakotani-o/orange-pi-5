@@ -5,10 +5,6 @@ jobs:
     name: Use Linux commands
     runs-on: ubuntu-24.04
     steps:
-    - name: Start Measurement
-        uses: green-coding-solutions/eco-ci-energy-estimation@v4 # use hash or @vX here (See note below)
-        with:
-          task: start-measurement
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout
         uses: actions/checkout@v4
