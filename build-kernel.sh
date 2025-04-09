@@ -22,11 +22,11 @@ git clone --depth 1 https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-n
 
 now=`cat linux-next/localversion-next|sed 's/-next-//'`
 rm 	linux-next/localversion-next
-head -5 linux-next/Makefile | sed 's# ##g' > ../overlay/tmp_var.txt
-cd linux-next # && patch -p1 < ../../overlay/rock-deb-patch-p1.txt
+head -5 linux-next/Makefile | sed 's# ##g' > ./tmp_var.txt
+cd linux-next # 
 patch -p1 < ../../overlay/opp
 patch -p1 < ../../orangepi-5-plus-patch/rk3588-orangepi-5-plus-led.txt
-. ../../overlay/tmp_var.txt
+. ./tmp_var.txt
 
 cp ../../overlay/nconfig.sh . && ./nconfig.sh
 
