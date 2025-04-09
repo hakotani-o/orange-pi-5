@@ -95,8 +95,5 @@ trap '' EXIT
 cd ..
 echo "DISK usage"
 df $1
-if [ $mem_size -gt 4 ]; then
-	sudo umount $linux_dir
-	sleep 2
-fi
+
 exit 0
