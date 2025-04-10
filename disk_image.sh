@@ -152,8 +152,8 @@ echo "UUID=${root_uuid,,} /              ext4    defaults,x-systemd.growfs    0 
 
 
 # Write bootloader to disk image
-if [ -f "overlay/u-boot-rockchip.bin" ]; then
-    dd if="overlay/u-boot-rockchip.bin" of="${loop}" seek=1 bs=32k conv=fsync
+if [ -f "./u-boot-rockchip.bin" ]; then
+    dd if="./u-boot-rockchip.bin" of="${loop}" seek=1 bs=32k conv=fsync
 else
 	echo "overlay/u-boot-rockchip.bin not found"
 	exit 1
