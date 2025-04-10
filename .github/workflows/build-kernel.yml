@@ -32,7 +32,10 @@ jobs:
           now=`cat linux-next/localversion-next|sed 's/-next-//'`
           rm      linux-next/localversion-next
           cp ../1-config.txt linux-next/.config
-          export PACKAGE_RELEASE="${now}-rockchip"
+          head -5 linux-next/Makefile | sed 's# ##g' > ./tmp_var.txt
+          . ./tmp_var.txt
+          EXTRAVERSION="${EXTRAVERSION}-$now"
+          export PACKAGE_RELEASE="$VERSION.$PATCHLEVEL.${SUBLEVEL}$EXTRAVERSION-rockchip"
           export DEBIAN_PACKAGE="next-$PACKAGE_RELEASE"
           export MAKE="make \
              KERNELVERSION=$PACKAGE_RELEASE \
