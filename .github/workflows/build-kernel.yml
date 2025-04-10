@@ -1,5 +1,5 @@
 name: command
-on: workflow_dispatch
+on: push
 #workflow_dispatch
 #[push]
 jobs:
@@ -52,6 +52,7 @@ jobs:
           mv $INSTALL_PATH/System.map-$PACKAGE_RELEASE $INSTALL_PATH/boot
           mkdir -p $INSTALL_PATH/usr/src/linux-headers-$PACKAGE_RELEASE
           cd ..
+          mkdir -p $KERNEL_BASE_PACKAGE/DEBIAN/control
           cat > $KERNEL_BASE_PACKAGE/DEBIAN/control << HEREDOC
           Package: $DEBIAN_PACKAGE
           Source: $DEBIAN_PACKAGE
