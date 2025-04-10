@@ -71,7 +71,8 @@ jobs:
           HEREDOC
           chmod 755 $KERNEL_BASE_PACKAGE/DEBIAN/postinst
           fakeroot dpkg-deb -z 4 -Z xz -b $KERNEL_BASE_PACKAGE ../..
-          cd ..
+          cd ../..
+          ls
                  
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v4.5.0
