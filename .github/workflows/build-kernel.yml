@@ -130,10 +130,10 @@ jobs:
        
 
       - name: disk u-boot
-        run: sudo umount arm64 && ls
+        run: sudo umount arm64 
 
       - name: rootfs
         run: |
           sleep 2
           /bin/bash ./u-bootstrap.sh arm64
-   
+          ls
