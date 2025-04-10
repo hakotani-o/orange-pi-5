@@ -71,13 +71,14 @@ jobs:
           HEREDOC
           chmod 755 $KERNEL_BASE_PACKAGE/DEBIAN/postinst
           fakeroot dpkg-deb -z 4 -Z xz -b $KERNEL_BASE_PACKAGE ${KERNEL_BASE_PACKAGE}_arm64.deb
+          ls && pwd
                  
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v4.5.0
         with:
         # A file, directory or wildcard pattern that describes what to upload
           name: arm64
-          path: ./next-*.deb
+          path: arm64/next-*.deb
           compression-level: 0
           # The desired behavior if no files are found using the provided path.
           if-no-files-found: error
