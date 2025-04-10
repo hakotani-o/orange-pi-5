@@ -1,5 +1,6 @@
 name: command
-on: workflow_dispatch
+on: push
+#workflow_dispatch
 #[push]
 jobs:
   command:
@@ -22,15 +23,54 @@ jobs:
           python-is-python3 fdisk bc debhelper python3-pyelftools python3-setuptools         \
           python3-distutils-extra python3-pkg-resources swig libfdt-dev libpython3-dev bison git
           /bin/bash   ./build-kernel.sh arm64
-          ls
-          ls arm64
+          mkdir arm64
+          sudo mount -t tmpfs -o size=6G tmpfs arm64
+          cd arm64
+          git clone --depth 1 https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+          now=`cat linux-next/localversion-next|sed 's/-next-//'`
+          rm      linux-next/localversion-next
+          export PACKAGE_RELEASE="${now}-rockchip"
+          export DEBIAN_PACKAGE="next-$PACKAGE_RELEASE"
+          export MAKE="make \
+             KERNELVERSION=$PACKAGE_RELEASE \
+             LOCALVERSION= \
+             localver-extra= \
+             PYTHON=python3"
+          $MAKE -j$(nproc)  all modules dtbs
+          export INSTALL_PATH="../${DEBIAN_PACKAGE}_arm64"
+          export KERNEL_BASE_PACKAGE="${DEBIAN_PACKAGE}_arm64"
+          rm -rf $INSTALL_PATH && mkdir -p $INSTALL_PATH
+          $MAKE install headers_install modules_install vdso_install dtbs_install INSTALL_MOD_STRIP=1 INSTALL_HDR_PATH=$INSTALL_PATH/usr/include INSTALL_MOD_PATH=$INSTALL_PATH INSTALL_FW_PATH=$INSTALL_PATH/lib/firmware/$PACKAGE_RELEASE INSTALL_DTBS_PATH=$INSTALL_PATH/boot/dtbs/$PACKAGE_RELEASE/device-tree
+          mv $INSTALL_PATH/vmlinuz-$PACKAGE_RELEASE $INSTALL_PATH/boot
+          mv $INSTALL_PATH/config-$PACKAGE_RELEASE $INSTALL_PATH/boot
+          mv $INSTALL_PATH/System.map-$PACKAGE_RELEASE $INSTALL_PATH/boot
+          mkdir -p $INSTALL_PATH/usr/src/linux-headers-$PACKAGE_RELEASE
+          cd ..
+          cat > $KERNEL_BASE_PACKAGE/DEBIAN/control << HEREDOC
+          Package: $DEBIAN_PACKAGE
+          Source: $DEBIAN_PACKAGE
+          Version: $PACKAGE_RELEASE
+          Section: main
+          Priority: standard
+          Architecture: arm64
+          Depends: kmod, linux-base (>= 4.5ubuntu1~16.04.1)
+          Homepage: https://kernel.org/
+          Rules-Requires-Root: no
+          Maintainer: Paper <kernel@papercube>
+          Description: A minimal kernel package for orange-pi-5.
+          HEREDOC
+          cat > $KERNEL_BASE_PACKAGE/DEBIAN/postinst << HEREDOC
+          run-parts --report --exit-on-error --arg=$PACKAGE_RELEASE --arg=/boot/vmlinuz-$PACKAGE_RELEASE /etc/kernel/postinst.d
+          HEREDOC
+          chmod 755 $KERNEL_BASE_PACKAGE/DEBIAN/postinst
+          fakeroot dpkg-deb -z 4 -Z xz -b $KERNEL_BASE_PACKAGE ../..
                  
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v4.5.0
         with:
         # A file, directory or wildcard pattern that describes what to upload
           name: arm64
-          path: ./kernel-*.deb
+          path: ./next-*.deb
           compression-level: 0
           # The desired behavior if no files are found using the provided path.
           if-no-files-found: error
