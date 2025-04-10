@@ -47,16 +47,14 @@ if [ ! -f ./overlay/rootfs ]; then
 	exit 1 
 fi
 
-. ./overlay/rootfs
-. ./overlay/kernel_version
+. ./rootfs
+. ./kernel_version
 
 rootfs="$(readlink -f "$rootfs")"
 if [[ "$(basename "${rootfs}")" != *".rootfs.tar" || ! -e "${rootfs}" ]]; then
     echo "Error: $(basename "${rootfs}") must be a rootfs tarfile"
     exit 1
 fi
-
-mkdir -p images
 
 # Create an empty disk image
 img="./images/$(basename "${rootfs}" .rootfs.tar)-${kernel_version}-$2.img"
@@ -238,13 +236,8 @@ losetup -d "${loop}"
 # Exit trap is no longer needed
 trap '' EXIT
 
-#echo -e "\nCompressing $(basename "${img}.xz")\n"
-#xz -6 --force --keep --quiet --threads=0 "${img}"
-#rm "${img}"
-#cd ./images && sha256sum "$(basename "${img}.xz")" > "$(basename "${img}.xz.sha256")"
+echo -e "\nCompressing $(basename "${img}.xz")\n"
+xz -6 --force --keep --quiet --threads=0 "${img}"
+rm "${img}"
 exit 0
 
-#if [ ! -d ${mountpoint}/boot/efi/EFI/boot ] && [ ! -d ${mountpoint}/boot/efi/EFI/BOOT ]; then
-#	mkdir ${mountpoint}/boot/efi/EFI/BOOT
-#	cp ${mountpoint}/boot/efi/EFI/debian/grubaa64.efi ${mountpoint}/boot/efi/EFI/BOOT/bootaa64.efi
-#fi
