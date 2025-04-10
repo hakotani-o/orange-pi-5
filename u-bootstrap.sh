@@ -59,10 +59,7 @@ fi
 rm -f wget-log* overlay/kernel_version
 
 suite=noble
-#suite=plucky
-Uri="http://plbk1.f5.si/ubuntu-ports"
-#Uri="http://repo.jing.rocks/ubuntu-ports"
-#Uri="http://ports.ubuntu.com/ubuntu-ports"
+Uri="http://ports.ubuntu.com/ubuntu-ports"
 	debootstrap --arch=arm64 $suite arm64 $Uri
 
 export DEBIAN_FRONTEND=noninteractive
@@ -108,7 +105,7 @@ chroot $1 apt-get -y install apt-utils software-properties-common
 ## mesa ppa ##chroot $1 add-apt-repository -y  ppa:kisak/kisak-mesa
 ## mesa ppa ##chroot $1 apt update
 
-./pkg-name.sh $1
+/bin/bash ./pkg-name.sh $1
 chroot $1 apt-get -y install  build-essential gcc-aarch64-linux-gnu bison \
 qemu-user-static qemu-system-arm qemu-efi-aarch64 binfmt-support \
 debootstrap flex libssl-dev bc rsync kmod cpio xz-utils fakeroot parted \
@@ -136,8 +133,8 @@ sed -i 's/#ADD_EXTRA_GROUPS=.*/ADD_EXTRA_GROUPS=1/g' $1/etc/adduser.conf
     fi
 
 # kernel
-mkdir $1/kkk && cp kernel/*.deb $1/kkk
-chroot $1 /bin/bash -c "cd kkk && dpkg -i *.deb"
+mkdir $1/kkk && cp next-*.deb $1/kkk
+chroot $1 /bin/bash -c "cd kkk && dpkg -i next-*.deb"
 
 # mesa
 mkdir $1/bbb
@@ -148,7 +145,7 @@ echo "DISK usage"
 df $1  
 rm -rf $1/aaa $1/bbb $1/kkk
 kernel_version="`ls -1 $1/boot/vmlinu?-*|sed 's#-# #' | awk '{ print $2 }'`"
-echo "kernel_version=$kernel_version" > overlay/kernel_version
+echo "kernel_version=$kernel_version" > ./kernel_version
 # install U-Boot
 chroot $1 apt-get -y install u-boot-tools u-boot-menu
 
@@ -183,8 +180,8 @@ teardown_mountpoint $chroot_dir
 rm -f wget-log*
 rm -f $1/boot/*.old
 #tar the rootfs
-rootfs="overlay/ubuntu-mainline.rootfs.tar"
-echo "rootfs=$rootfs" > overlay/rootfs
+rootfs="./ubuntu-mainline.rootfs.tar"
+echo "rootfs=$rootfs" > ./rootfs
 cd $1
 rm -rf ../$rootfs
 sync
