@@ -1,5 +1,5 @@
 name: command
-on: workflow_dispatch
+on: push
 #workflow_dispatch
 #[push]
 jobs:
@@ -35,7 +35,7 @@ jobs:
              LOCALVERSION= \
              localver-extra= \
              PYTHON=python3"
-          $MAKE -j$(nproc)  all modules dtbs
+          cd linux-next && $MAKE -j$(nproc)  all modules dtbs
           export INSTALL_PATH="../${DEBIAN_PACKAGE}_arm64"
           export KERNEL_BASE_PACKAGE="${DEBIAN_PACKAGE}_arm64"
           rm -rf $INSTALL_PATH && mkdir -p $INSTALL_PATH
