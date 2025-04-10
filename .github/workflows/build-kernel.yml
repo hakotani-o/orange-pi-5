@@ -71,18 +71,62 @@ jobs:
           HEREDOC
           chmod 755 $KERNEL_BASE_PACKAGE/DEBIAN/postinst
           fakeroot dpkg-deb -z 4 -Z xz -b $KERNEL_BASE_PACKAGE ${KERNEL_BASE_PACKAGE}_arm64.deb
+          cp $KERNEL_BASE_PACKAGE ${KERNEL_BASE_PACKAGE}_arm64.deb ..
           cd ..
                  
-      - name: Upload a Build Artifact
+      - name: Upload a kernel
         uses: actions/upload-artifact@v4.5.0
         with:
         # A file, directory or wildcard pattern that describes what to upload
-          name: arm64
+          name: kernel
           path: arm64/next-*.deb
           compression-level: 0
           # The desired behavior if no files are found using the provided path.
           if-no-files-found: error
           
-      - name: disk
+      - name: disk kernel
         run: sudo umount arm64
-        
+
+      - name: u-boot
+        run: |
+          sleep 2
+          sudo apt-get -y install  build-essential gcc-aarch64-linux-gnu bison \
+          qemu-user-static qemu-system-arm qemu-efi-aarch64 binfmt-support \
+          debootstrap flex libssl-dev bc rsync kmod cpio xz-utils fakeroot parted \
+          udev dosfstools uuid-runtime git-lfs device-tree-compiler python3 \
+          python-is-python3 fdisk bc debhelper python3-pyelftools python3-setuptools \
+          python3-pkg-resources swig libfdt-dev libpython3-dev gawk \
+          build-essential ncurses-dev xz-utils libssl-dev bc flex \
+          libelf-dev bison libgnutls28-dev
+          sudo mount -t tmpfs -o size=1G tmpfs arm64
+          cd arm64
+          git clone --depth 1 https://github.com/rockchip-linux/rkbin
+          DDR=`ls rkbin/bin/rk35/rk3588_ddr_lp4_2112MHz_lp5_2400MHz*.bin`
+          BL31=`ls rkbin/bin/rk35/rk3588_bl31*.elf`
+          git clone --depth 1 https://source.denx.de/u-boot/u-boot.git
+          cd u-boot
+          export BL31=../$BL31
+          export ROCKCHIP_TPL="../$DDR"
+          sed -i 's/scsi //' include/configs/rockchip-common.h
+          sed -i 's/mmc1/scsi mmc1/' include/configs/rockchip-common.h
+          sed -i 's/#ifndef CONFIG_XPL_BUILD/#ifndef CONFIG_XPL_BUILD\n\n# define BOOT_TARGET_DEVICES_SCSI(func)  func(SCSI, scsi, 0, 0, 1) func(SCSI, scsi, 0, 0, 2)\n\n# define BOOT_TARGET_DEVICES_NVME(func)  func(NVME, nvme, 0, 0, 1) func(NVME, nvme, 0, 0, 2)\n\n/' include/configs/rockchip-common.h
+          echo "CONFIG_CMD_KASLRSEED=y" >> configs/orangepi-5-plus-rk3588_defconfig
+          echo "CONFIG_DM_RNG=y" >> configs/orangepi-5-plus-rk3588_defconfig
+          make orangepi-5-rk3588s_defconfig
+          make
+          cp u-boot-rockchip.bin ..
+          cp u-boot-rockchip.bin ../..
+
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v4.5.0
+        with:
+        # A file, directory or wildcard pattern that describes what to upload
+          name: u-boot
+          path: arm64/u-boot-rockchip.bin
+          compression-level: 0
+          # The desired behavior if no files are found using the provided path.
+          if-no-files-found: error
+
+      - name: disk u-boot
+        run: sudo umount arm64 && ls
+
