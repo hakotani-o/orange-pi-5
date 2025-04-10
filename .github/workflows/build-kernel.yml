@@ -127,12 +127,13 @@ jobs:
           # The desired behavior if no files are found using the provided path.
           if-no-files-found: error
 
-      - name: rootfs
-        run: |
-          sleep 2
-          /bin/bash ./u-bootstrap.sh arm64
-          
+       
 
       - name: disk u-boot
         run: sudo umount arm64 && ls
 
+      - name: rootfs
+        run: |
+          sleep 2
+          /bin/bash ./u-bootstrap.sh arm64
+   
