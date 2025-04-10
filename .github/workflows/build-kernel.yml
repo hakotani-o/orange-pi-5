@@ -135,5 +135,5 @@ jobs:
       - name: rootfs
         run: |
           sleep 2
-          /bin/bash ./u-bootstrap.sh arm64
+          sudo /bin/bash ./u-bootstrap.sh arm64
           ls
