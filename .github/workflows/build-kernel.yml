@@ -21,7 +21,10 @@ jobs:
           debootstrap flex libssl-dev bc rsync kmod cpio xz-utils fakeroot parted            \
           udev dosfstools uuid-runtime git-lfs device-tree-compiler python3 dctrl-tools      \
           python-is-python3 fdisk bc debhelper python3-pyelftools python3-setuptools         \
-          python3-distutils-extra python3-pkg-resources swig libfdt-dev libpython3-dev bison git
+          python3-distutils-extra python3-pkg-resources swig libfdt-dev libpython3-dev bison
+
+      - name: Clone
+        run: |
           mkdir arm64
           sudo mount -t tmpfs -o size=6G tmpfs arm64
           cd arm64
