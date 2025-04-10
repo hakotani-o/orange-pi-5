@@ -1,5 +1,5 @@
 name: command
-on: push
+on: workflow_dispatch
 #workflow_dispatch
 #[push]
 jobs:
@@ -71,7 +71,7 @@ jobs:
           HEREDOC
           chmod 755 $KERNEL_BASE_PACKAGE/DEBIAN/postinst
           fakeroot dpkg-deb -z 4 -Z xz -b $KERNEL_BASE_PACKAGE ${KERNEL_BASE_PACKAGE}_arm64.deb
-          ls && pwd
+          cd ..
                  
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v4.5.0
@@ -84,6 +84,5 @@ jobs:
           if-no-files-found: error
           
       - name: disk
-        run: |
-          ls && cd && pwd && ls
-          sudo umount arm64
+        run: sudo umount arm64
+        
