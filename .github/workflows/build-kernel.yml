@@ -1,5 +1,5 @@
 name: command
-on: workflow_dispatch
+on: push
 #workflow_dispatch
 #[push]
 jobs:
@@ -28,6 +28,7 @@ jobs:
           git clone --depth 1 https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
           now=`cat linux-next/localversion-next|sed 's/-next-//'`
           rm      linux-next/localversion-next
+          cp ../../1-config.txt linux-next/.config
           export PACKAGE_RELEASE="${now}-rockchip"
           export DEBIAN_PACKAGE="next-$PACKAGE_RELEASE"
           export MAKE="make \
