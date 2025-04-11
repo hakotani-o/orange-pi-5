@@ -56,7 +56,6 @@ mem_size=`free --giga|grep Mem|awk '{print $2}'`
 if [ $mem_size -gt 15 ]; then
 	mount -t tmpfs -o size=10G tmpfs $chroot_dir
 fi
-rm -f wget-log* overlay/kernel_version
 
 suite=noble
 Uri="http://ports.ubuntu.com/ubuntu-ports"
@@ -102,8 +101,6 @@ chroot $1 apt-get update
 chroot $1 apt-get -y upgrade
 chroot $1 apt-get -y dist-upgrade
 chroot $1 apt-get -y install apt-utils software-properties-common
-## mesa ppa ##chroot $1 add-apt-repository -y  ppa:kisak/kisak-mesa
-## mesa ppa ##chroot $1 apt update
 
 /bin/bash ./pkg-name.sh $1
 chroot $1 apt-get -y install  build-essential gcc-aarch64-linux-gnu bison \
@@ -185,7 +182,7 @@ echo "rootfs=$rootfs" > ./rootfs
 cd $1
 rm -rf ../$rootfs
 sync
-tar -cvf ../$rootfs --xattrs ./*
+tar -cf ../$rootfs --xattrs ./*
 cd ..
 # Exit trap is no longer needed
 trap '' EXIT
