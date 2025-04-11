@@ -1,4 +1,4 @@
-name: build_kernel
+name: build-kernel
 on: workflow_dispatch
 #workflow_dispatch
 #[push]
