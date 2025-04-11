@@ -3376,7 +3376,6 @@ CONFIG_DRM=m
 # DRM debugging options
 #
 # CONFIG_DRM_WERROR is not set
-# CONFIG_DRM_HEADER_TEST is not set
 # CONFIG_DRM_DEBUG_MM is not set
 # end of DRM debugging options
 
