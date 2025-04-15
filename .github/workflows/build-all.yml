@@ -29,11 +29,15 @@ jobs:
           mkdir arm64
           sudo mount -t tmpfs -o size=6G tmpfs arm64
           cd arm64
-          git clone --depth 1 https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
-          now=`cat linux-next/localversion-next|sed 's/-next-//'`
-          rm      linux-next/localversion-next
-          cp ../1-config.txt linux-next/.config
-          head -5 linux-next/Makefile | sed 's# ##g' > ./tmp_var.txt
+          #git clone --depth 1 https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+          git clone --depth 1 https://github.com/torvalds/linux.git
+          #now=`cat linux-next/localversion-next|sed 's/-next-//'`
+          #rm      linux-next/localversion-next
+          now=`date +"%Y%m%d"`
+          #cp ../1-config.txt linux-next/.config
+          cp ../1-config.txt linux/.config
+          #head -5 linux-next/Makefile | sed 's# ##g' > ./tmp_var.txt
+          head -5 linux/Makefile | sed 's# ##g' > ./tmp_var.txt
           . ./tmp_var.txt
           EXTRAVERSION="${EXTRAVERSION}-$now"
           export PACKAGE_RELEASE="$VERSION.$PATCHLEVEL.${SUBLEVEL}$EXTRAVERSION-rockchip"
@@ -43,7 +47,11 @@ jobs:
              LOCALVERSION= \
              localver-extra= \
              PYTHON=python3"
-          cd linux-next && $MAKE -j$(nproc)  all modules dtbs
+          #cd linux-next
+          cd linux
+          sed -i 's#opp-300000000#/* opp-300000000#' arch/arm64/boot/dts/rockchip/rk3588-opp.dtsi
+          sed -i 's#opp-600000000#*/ opp-600000000#' arch/arm64/boot/dts/rockchip/rk3588-opp.dtsi
+          $MAKE -j$(nproc)  all modules dtbs
           export INSTALL_PATH="../${DEBIAN_PACKAGE}_arm64"
           export KERNEL_BASE_PACKAGE="${DEBIAN_PACKAGE}_arm64"
           rm -rf $INSTALL_PATH && mkdir -p $INSTALL_PATH
