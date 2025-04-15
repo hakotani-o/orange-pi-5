@@ -1,5 +1,5 @@
 name: build-kernel
-on: workflow_dispatch
+on: push
 #workflow_dispatch
 #[push]
 jobs:
@@ -33,7 +33,8 @@ jobs:
           #now=`cat linux-next/localversion-next|sed 's/-next-//'`
           now=`date +"%Y%m%d"`
           #rm      linux-next/localversion-next
-          cp ../1-config.txt linux-next/.config
+          #cp ../1-config.txt linux-next/.config
+          cp ../1-config.txt linux/.config
           head -5 linux-next/Makefile | sed 's# ##g' > ./tmp_var.txt
           . ./tmp_var.txt
           EXTRAVERSION="${EXTRAVERSION}-$now"
