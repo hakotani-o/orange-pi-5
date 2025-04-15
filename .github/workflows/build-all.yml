@@ -1,4 +1,4 @@
-name: buildf-all
+name: build-all
 on: workflow_dispatch
 #workflow_dispatch
 #[push]
