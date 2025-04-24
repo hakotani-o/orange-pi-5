@@ -3,7 +3,7 @@
 	cd /aaa
 	apt-get -y --no-install-recommends install ubuntu-desktop
 
-	apt-get download ubuntu-desktop && chown _apt ubuntu-desktop*
+	apt-get download ubuntu-desktop
 	dpkg -e ubuntu-desktop*
 	cd DEBIAN
 	echo '#!/bin/bash' > aa
