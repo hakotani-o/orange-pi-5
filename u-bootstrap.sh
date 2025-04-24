@@ -57,7 +57,7 @@ if [ $mem_size -gt 15 ]; then
 	mount -t tmpfs -o size=10G tmpfs $chroot_dir
 fi
 
-suite=noble
+suite=plucky
 Uri="http://ports.ubuntu.com/ubuntu-ports"
 	debootstrap --arch=arm64 $suite arm64 $Uri
 
@@ -102,7 +102,10 @@ chroot $1 apt-get -y upgrade
 chroot $1 apt-get -y dist-upgrade
 chroot $1 apt-get -y install apt-utils software-properties-common
 
-/bin/bash ./pkg-name.sh $1
+mkdir $1/aaa
+cp ./pkg-name.sh $1/aaa
+chroot $1 /aaa/pkg-name.sh
+
 chroot $1 apt-get -y install  build-essential gcc-aarch64-linux-gnu bison \
 qemu-user-static qemu-system-arm qemu-efi-aarch64 binfmt-support \
 debootstrap flex libssl-dev bc rsync kmod cpio xz-utils fakeroot parted \
