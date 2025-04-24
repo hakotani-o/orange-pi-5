@@ -103,7 +103,7 @@ chroot $1 apt-get -y dist-upgrade
 chroot $1 apt-get -y install apt-utils software-properties-common
 
 mkdir $1/aaa
-cp ./pkg-name.sh $1/aaa
+cp ./pkg-name.sh $1/aaa && chmod +x $1/aaa/pkg-name.sh
 chroot $1 /aaa/pkg-name.sh
 
 chroot $1 apt-get -y install  build-essential gcc-aarch64-linux-gnu bison \
