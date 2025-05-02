@@ -118,7 +118,6 @@ jobs:
           export ROCKCHIP_TPL="../$DDR"
           sed -i 's/scsi //' include/configs/rockchip-common.h
           sed -i 's/mmc1/scsi mmc1/' include/configs/rockchip-common.h
-          sed -i 's/#ifndef CONFIG_XPL_BUILD/#ifndef CONFIG_XPL_BUILD\n\n# define BOOT_TARGET_DEVICES_SCSI(func)  func(SCSI, scsi, 0, 0, 1) func(SCSI, scsi, 0, 0, 2)\n\n# define BOOT_TARGET_DEVICES_NVME(func)  func(NVME, nvme, 0, 0, 1) func(NVME, nvme, 0, 0, 2)\n\n/' include/configs/rockchip-common.h
           echo "CONFIG_CMD_KASLRSEED=y" >> configs/orangepi-5-plus-rk3588_defconfig
           echo "CONFIG_DM_RNG=y" >> configs/orangepi-5-plus-rk3588_defconfig
           make orangepi-5-rk3588s_defconfig
