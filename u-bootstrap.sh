@@ -116,7 +116,7 @@ git fakeroot build-essential ncurses-dev xz-utils libssl-dev bc flex \
 libelf-dev bison sudo libgnutls28-dev
 
 # mesa
-chroot $1 apt-get -y install flex bison python3-mako libwayland-egl-backend-dev libxcb-dri3-dev libxcb-dri2-0-dev libxcb-glx0-dev libx11-xcb-dev libxcb-present-dev libxcb-sync-dev libxxf86vm-dev libxshmfence-dev libxrandr-dev libwayland-dev libxdamage-dev libxext-dev libxfixes-dev x11proto-dri2-dev  x11proto-present-dev x11proto-gl-dev x11proto-xf86vidmode-dev libexpat1-dev libudev-dev gettext mesa-utils xutils-dev libpthread-stubs0-dev ninja-build bc flex bison cmake git valgrind llvm  python3-pip pkg-config zlib1g-dev wayland-protocols libxcb-shm0-dev meson
+chroot $1 apt-get -y install flex bison python3-mako libwayland-egl-backend-dev libxcb-dri3-dev libxcb-dri2-0-dev libxcb-glx0-dev libx11-xcb-dev libxcb-present-dev libxcb-sync-dev libxxf86vm-dev libxshmfence-dev libxrandr-dev libwayland-dev libxdamage-dev libxext-dev libxfixes-dev x11proto-dri2-dev  x11proto-present-dev x11proto-gl-dev x11proto-xf86vidmode-dev libexpat1-dev libudev-dev gettext mesa-utils xutils-dev libpthread-stubs0-dev ninja-build bc flex bison cmake git valgrind python3-pip pkg-config zlib1g-dev wayland-protocols libxcb-shm0-dev meson llvm-20-dev libclang-cpp20-dev libclc-20-dev libllvmspirvlib-20-dev spirv-tools libopencl-clang-20-dev clang-20 libclang-20-dev llvm-spirv-20 libclang-common-20-dev
 chroot $1 apt-get -y purge cloud-init flash-kernel fwupd
 
 chroot $1 apt-get update
@@ -139,7 +139,7 @@ chroot $1 /bin/bash -c "cd kkk && dpkg -i next-*.deb"
 # mesa
 mkdir $1/bbb
 chroot $1 /bin/bash -c "cd bbb && git clone --depth 1 https://gitlab.freedesktop.org/mesa/drm && cd drm/ && mkdir build && cd build/ && meson && ninja install"
-chroot $1 /bin/bash -c "cd bbb && git clone --depth 1 -b staging/25.0 https://gitlab.freedesktop.org/mesa/mesa.git && cd mesa && mkdir build && cd build && meson -Dvulkan-drivers= -Dgallium-drivers=panfrost,swrast -Dlibunwind=false -Dprefix=/opt/panfrost && ninja install && echo /opt/panfrost/lib/aarch64-linux-gnu | tee /etc/ld.so.conf.d/0-panfrost.conf"
+chroot $1 /bin/bash -c "cd bbb && git clone --depth 1 -b staging/25.1 https://gitlab.freedesktop.org/mesa/mesa.git && cd mesa && mkdir build && cd build && meson -Dvulkan-drivers= -Dgallium-drivers=panfrost,swrast -Dlibunwind=false -Dprefix=/opt/panfrost && ninja install && echo /opt/panfrost/lib/aarch64-linux-gnu | tee /etc/ld.so.conf.d/0-panfrost.conf"
 
 echo "DISK usage"
 df $1  
