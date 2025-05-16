@@ -144,7 +144,7 @@ chroot $1 /bin/bash -c "cd kkk && dpkg -i next-*.deb"
 # mesa
 mkdir $1/bbb
 chroot $1 /bin/bash -c "cd bbb && git clone --depth 1 https://gitlab.freedesktop.org/mesa/drm && cd drm/ && mkdir build && cd build/ && meson && ninja install"
-chroot $1 /bin/bash -c "cd bbb && git clone --depth 1 -b staging/25.1 https://gitlab.freedesktop.org/mesa/mesa.git && cd mesa && mkdir build && cd build && meson -Dvulkan-drivers= -Dgallium-drivers=panfrost,swrast -Dlibunwind=false -Dprefix=/opt/panfrost && ninja install && echo /opt/panfrost/lib/aarch64-linux-gnu | tee /etc/ld.so.conf.d/0-panfrost.conf"
+chroot $1 /bin/bash -c "cd bbb && git clone --depth 1 -b staging/25.1 https://gitlab.freedesktop.org/mesa/mesa.git && cd mesa && mkdir build && cd build && meson -Dvulkan-drivers= -Dgallium-drivers=panfrost -Dlibunwind=false -Dprefix=/opt/panfrost && ninja install && echo /opt/panfrost/lib/aarch64-linux-gnu | tee /etc/ld.so.conf.d/0-panfrost.conf"
 
 echo "DISK usage"
 df $1  
