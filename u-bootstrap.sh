@@ -134,7 +134,7 @@ sed -i 's/#ADD_EXTRA_GROUPS=.*/ADD_EXTRA_GROUPS=1/g' $1/etc/adduser.conf
     if ! id "oem" &>/dev/null; then
         chroot $1 /usr/sbin/useradd -d /home/oem -G adm,sudo,video -m -N -u 29999 oem
         chroot $1 /usr/sbin/oem-config-prepare --quiet
-        chroot $1 touch "/var/lib/oem-config/run"
+        chroot $1 touch "/var/lib/oem-config/run" 
     fi
 
 # kernel
@@ -144,7 +144,7 @@ chroot $1 /bin/bash -c "cd kkk && dpkg -i next-*.deb"
 # mesa
 mkdir $1/bbb
 chroot $1 /bin/bash -c "cd bbb && git clone --depth 1 https://gitlab.freedesktop.org/mesa/drm && cd drm/ && mkdir build && cd build/ && meson && ninja install"
-chroot $1 /bin/bash -c "cd bbb && git clone --depth 1 -b staging/25.1 https://gitlab.freedesktop.org/mesa/mesa.git && cd mesa && mkdir build && cd build && meson -Dvulkan-drivers= -Dgallium-drivers=panfrost -Dlibunwind=false -Dprefix=/opt/panfrost && ninja install && echo /opt/panfrost/lib/aarch64-linux-gnu | tee /etc/ld.so.conf.d/0-panfrost.conf"
+chroot $1 /bin/bash -c "cd bbb && git clone --depth 1 -b staging/25.1 https://gitlab.freedesktop.org/mesa/mesa.git && cd mesa && mkdir build && cd build && meson -Dvulkan-drivers=panfrost -Dgallium-drivers=panfrost -Dlibunwind=false -Dprefix=/opt/panfrost && ninja install && echo /opt/panfrost/lib/aarch64-linux-gnu | tee /etc/ld.so.conf.d/0-panfrost.conf && echo 'VK_DRIVER_FILES="/opt/panfrost/share/vulkan/icd.d/panfrost_icd.aarch64.json"' >> /etc/environment"
 
 echo "DISK usage"
 df $1  
