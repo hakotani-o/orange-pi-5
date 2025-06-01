@@ -7,8 +7,8 @@ if [ "$(id -u)" -ne 0 ]; then
     echo "Please run as root"
     exit 1
 fi
-ls
-kernel=`ls ./*.deb|wc -l`
+
+kernel=`ls *.deb|wc -l`
 if [ $kernel -ne 2 ]; then
 	echo "Build kernel first"
 	exit 1
