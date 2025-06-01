@@ -8,8 +8,8 @@ if [ "$(id -u)" -ne 0 ]; then
     exit 1
 fi
 
-kernel=`ls ./next-*.deb|wc -l`
-if [ $kernel -ne 1 ]; then
+kernel=`ls ./*.deb|wc -l`
+if [ $kernel -ne 2 ]; then
 	echo "Build kernel first"
 	exit 1
 fi
@@ -138,7 +138,7 @@ sed -i 's/#ADD_EXTRA_GROUPS=.*/ADD_EXTRA_GROUPS=1/g' $1/etc/adduser.conf
     fi
 
 # kernel
-mkdir $1/kkk && cp next-*.deb $1/kkk
+mkdir $1/kkk && cp *.deb $1/kkk
 chroot $1 /bin/bash -c "cd kkk && dpkg -i *.deb"
 
 # mesa
