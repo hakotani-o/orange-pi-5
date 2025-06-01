@@ -108,7 +108,7 @@ jobs:
           chmod 755 $KERNEL_BASE_PACKAGE/DEBIAN/postinst
           fakeroot dpkg-deb -z 4 -Z xz -b $KERNEL_BASE_PACKAGE .
           fakeroot dpkg-deb -z 4 -Z xz -b $HEADER_BASE_PACKAGE .
-  
+          pwd
           cd ..
 
       - name: Upload a kernel
