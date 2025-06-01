@@ -109,6 +109,7 @@ jobs:
           fakeroot dpkg-deb -z 4 -Z xz -b $KERNEL_BASE_PACKAGE .
           fakeroot dpkg-deb -z 4 -Z xz -b $HEADER_BASE_PACKAGE .
           pwd
+          ls
           cd ..
 
       - name: Upload a kernel
@@ -116,7 +117,7 @@ jobs:
         with:
         # A file, directory or wildcard pattern that describes what to upload
           name: kernel
-          path: arm64/kernel-*.deb arm64/linux-libc-dev*.deb
+          path: arm64/*.deb
           compression-level: 0
           # The desired behavior if no files are found using the provided path.
           if-no-files-found: error
