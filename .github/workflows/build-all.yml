@@ -55,7 +55,9 @@ jobs:
           cd linux
           sed -i 's#opp-300000000#/* opp-300000000#' arch/arm64/boot/dts/rockchip/rk3588-opp.dtsi
           sed -i 's#opp-600000000#*/ opp-600000000#' arch/arm64/boot/dts/rockchip/rk3588-opp.dtsi
+          echo "make 1"
           $MAKE -j$(nproc)  all modules dtbs
+          
           export INSTALL_PATH="../${DEBIAN_PACKAGE}_arm64"
           export KERNEL_BASE_PACKAGE="${DEBIAN_PACKAGE}_arm64"
           rm -rf $INSTALL_PATH && mkdir -p $INSTALL_PATH
@@ -64,8 +66,10 @@ jobs:
           export HEADER_INSTALL_PATH="../${HEADER_DEBIAN_PACKAGE}_arm64"
           export HEADER_BASE_PACKAGE="${HEADER_DEBIAN_PACKAGE}_arm64"
           rm -rf $HEADER_INSTALL_PATH && mkdir -p $HEADER_INSTALL_PATH
-          
+
+          echo "make 2"
           $MAKE install modules_install vdso_install dtbs_install INSTALL_MOD_STRIP=1 INSTALL_MOD_PATH=$INSTALL_PATH INSTALL_FW_PATH=$INSTALL_PATH/lib/firmware/$PACKAGE_RELEASE INSTALL_DTBS_PATH=$INSTALL_PATH/boot/dtbs/$PACKAGE_RELEASE/device-tree
+          echo "make 3"
           $MAKE headers_install INSTALL_HDR_PATH=$HEADER_INSTALL_PATH/usr/
           mv $INSTALL_PATH/vmlinu?-$PACKAGE_RELEASE $INSTALL_PATH/boot
           mv $INSTALL_PATH/config-$PACKAGE_RELEASE $INSTALL_PATH/boot
