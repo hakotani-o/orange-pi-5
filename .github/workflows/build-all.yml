@@ -70,8 +70,8 @@ jobs:
           mv $INSTALL_PATH/vmlinu?-$PACKAGE_RELEASE $INSTALL_PATH/boot
           mv $INSTALL_PATH/config-$PACKAGE_RELEASE $INSTALL_PATH/boot
           mv $INSTALL_PATH/System.map-$PACKAGE_RELEASE $INSTALL_PATH/boot
-          mkdir -p $INSTALL_PATH/usr/src/linux-headers-$PACKAGE_RELEASE
-          $MAKE headers_install INSTALL_HDR_PATH=$INSTALL_PATH/usr/src/linux-headers-$PACKAGE_RELEASE
+          mkdir -p $INSTALL_PATH/usr/src
+          ln -f -n -s /usr/src/linux-headers-$KERNEL_BASE_PACKAGE $INSTALL_PATH/lib/modules/$PACKAGE_RELEASE/build
           
           cd ..
           mkdir -p $KERNEL_BASE_PACKAGE/DEBIAN/
