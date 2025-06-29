@@ -64,7 +64,7 @@ jobs:
           rm -rf $HEADER_INSTALL_PATH && mkdir -p $HEADER_INSTALL_PATH
 
           echo "make 2"
-          $MAKE install modules_install vdso_install dtbs_install INSTALL_MOD_STRIP=1 INSTALL_MOD_PATH=$INSTALL_PATH INSTALL_FW_PATH=$INSTALL_PATH/lib/firmware/$PACKAGE_RELEASE INSTALL_DTBS_PATH=$INSTALL_PATH/boot/dtbs/$PACKAGE_RELEASE/device-tree
+          $MAKE zinstall modules_install vdso_install dtbs_install INSTALL_MOD_STRIP=1 INSTALL_MOD_PATH=$INSTALL_PATH INSTALL_FW_PATH=$INSTALL_PATH/lib/firmware/$PACKAGE_RELEASE INSTALL_DTBS_PATH=$INSTALL_PATH/boot/dtbs/$PACKAGE_RELEASE/device-tree
           echo "make 3"
           $MAKE headers_install INSTALL_HDR_PATH=$HEADER_INSTALL_PATH/usr
           mv $INSTALL_PATH/vmlinu?-$PACKAGE_RELEASE $INSTALL_PATH/boot
