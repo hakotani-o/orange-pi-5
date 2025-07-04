@@ -131,14 +131,17 @@ sed -i 's/#EXTRA_GROUPS=.*/EXTRA_GROUPS="video"/g' $1/etc/adduser.conf
 sed -i 's/#ADD_EXTRA_GROUPS=.*/ADD_EXTRA_GROUPS=1/g' $1/etc/adduser.conf
 
 # Create the oem user account only if it doesn't already exist
-if id "oem" &>/dev/null; then
-    echo "User 'oem' already exists."
-else
-    echo "User 'oem' does not exist. Adding user..."
-    chroot $1 /usr/sbin/useradd -d /home/oem -G adm,sudo,video -m -N -u 29999 oem
-    chroot $1 /usr/sbin/oem-config-prepare --quiet
-    chroot $1 touch "/var/lib/oem-config/run" 
-fi
+# if id "oem" &>/dev/null; then
+#     echo "User 'oem' already exists."
+# else
+#     echo "User 'oem' does not exist. Adding user..."
+#     chroot $1 /usr/sbin/useradd -d /home/oem -G adm,sudo,video -m -N -u 29999 oem
+#     chroot $1 /usr/sbin/oem-config-prepare --quiet
+#     chroot $1 touch "/var/lib/oem-config/run" 
+# fi
+
+chroot $1 /usr/sbin/oem-config-prepare --quiet
+chroot $1 touch "/var/lib/oem-config/run" 
 
 # kernel
 mkdir $1/kkk && cp *.deb $1/kkk
