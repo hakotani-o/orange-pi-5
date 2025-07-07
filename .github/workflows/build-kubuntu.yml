@@ -1,0 +1,187 @@
+name: build-all
+on: workflow_dispatch
+#workflow_dispatch
+#[push]
+jobs:
+  command:
+    name: Use Linux commands
+    runs-on: ubuntu-24.04-arm
+    steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Checkout
+        uses: actions/checkout@v4
+
+
+      - name: Show ubuntu details
+        run: |
+          sudo apt update
+          # sudo apt upgrade -y
+          sudo apt install -y build-essential gcc-aarch64-linux-gnu devscripts dctrl-tools   \
+          qemu-user-static qemu-system-arm qemu-efi-aarch64 u-boot-tools binfmt-support      \
+          debootstrap flex libssl-dev bc rsync kmod cpio xz-utils fakeroot parted            \
+          udev dosfstools uuid-runtime git-lfs device-tree-compiler python3 dctrl-tools      \
+          python-is-python3 fdisk bc debhelper python3-pyelftools python3-setuptools         \
+          python3-distutils-extra python3-pkg-resources swig libfdt-dev libpython3-dev bison
+
+
+      - name: Clone
+        run: |
+          mkdir arm64
+          sudo mount -t tmpfs -o size=6G tmpfs arm64
+          cd arm64
+          #git clone --depth 1 https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+          git clone --depth 1 https://github.com/torvalds/linux.git
+          #git clone --depth 1 https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git -b linux-6.15.y
+          #now=`cat linux-next/localversion-next|sed 's/-next-//'`
+          #rm      linux-next/localversion-next
+          now=`date +"%Y%m%d"`
+          #cp ../1-config.txt linux-next/.config
+          cp ../1-config.txt linux/.config
+          #head -5 linux-next/Makefile | sed 's# ##g' > ./tmp_var.txt
+          head -5 linux/Makefile | sed 's# ##g' > ./tmp_var.txt
+          . ./tmp_var.txt
+          EXTRAVERSION="${EXTRAVERSION}.-now"
+          export PACKAGE_RELEASE="$VERSION.$PATCHLEVEL.${SUBLEVEL}$EXTRAVERSION-rockchip"
+          export DEBIAN_PACKAGE="kernel-$PACKAGE_RELEASE"
+          export MAKE="make KERNELVERSION=$PACKAGE_RELEASE LOCALVERSION= localver-extra= PYTHON=python3"
+          #cd linux-next
+          cd linux
+          patch -p1 < ../../ARM-rockchip-fix-kernel-hang-during-smp-initialization.diff
+          sed -i 's#opp-300000000#/* opp-300000000#' arch/arm64/boot/dts/rockchip/rk3588-opp.dtsi
+          sed -i 's#opp-600000000#*/ opp-600000000#' arch/arm64/boot/dts/rockchip/rk3588-opp.dtsi
+          echo "make 1"
+          $MAKE -j$(nproc)  all modules dtbs
+          
+          export INSTALL_PATH="../${DEBIAN_PACKAGE}_arm64"
+          export KERNEL_BASE_PACKAGE="${DEBIAN_PACKAGE}_arm64"
+          rm -rf $INSTALL_PATH && mkdir -p $INSTALL_PATH
+          # header
+          export HEADER_DEBIAN_PACKAGE="linux-libc-dev-${PACKAGE_RELEASE%%~*}"
+          export HEADER_INSTALL_PATH="../${HEADER_DEBIAN_PACKAGE}_arm64"
+          export HEADER_BASE_PACKAGE="${HEADER_DEBIAN_PACKAGE}_arm64"
+          rm -rf $HEADER_INSTALL_PATH && mkdir -p $HEADER_INSTALL_PATH
+
+          echo "make 2"
+          $MAKE zinstall modules_install vdso_install dtbs_install INSTALL_MOD_STRIP=1 INSTALL_MOD_PATH=$INSTALL_PATH INSTALL_FW_PATH=$INSTALL_PATH/lib/firmware/$PACKAGE_RELEASE INSTALL_DTBS_PATH=$INSTALL_PATH/boot/dtbs/$PACKAGE_RELEASE/device-tree
+          echo "make 3"
+          $MAKE headers_install INSTALL_HDR_PATH=$HEADER_INSTALL_PATH/usr
+          mv $INSTALL_PATH/vmlinu?-$PACKAGE_RELEASE $INSTALL_PATH/boot
+          mv $INSTALL_PATH/config-$PACKAGE_RELEASE $INSTALL_PATH/boot
+          mv $INSTALL_PATH/System.map-$PACKAGE_RELEASE $INSTALL_PATH/boot
+          mkdir -p $INSTALL_PATH/usr/src
+          ln -f -n -s /usr/src/linux-headers-$KERNEL_BASE_PACKAGE $INSTALL_PATH/lib/modules/$PACKAGE_RELEASE/build
+          
+          cd ..
+          mkdir -p $KERNEL_BASE_PACKAGE/DEBIAN/
+          cat > $KERNEL_BASE_PACKAGE/DEBIAN/control << HEREDOC
+          Package: $DEBIAN_PACKAGE
+          Source: $DEBIAN_PACKAGE
+          Version: $PACKAGE_RELEASE
+          Section: main
+          Priority: standard
+          Architecture: arm64
+          Depends: kmod, linux-base (>= 4.5ubuntu1~16.04.1)
+          Maintainer: none
+          Description: A experimental build package for ubuntu-desktop aarch64 running on opi-5.
+          HEREDOC
+          cat > $KERNEL_BASE_PACKAGE/DEBIAN/postinst << HEREDOC
+          run-parts --report --exit-on-error --arg=$PACKAGE_RELEASE --arg=/boot/vmlinuz-$PACKAGE_RELEASE /etc/kernel/postinst.d
+          HEREDOC
+          # HEADER
+          mkdir -p $HEADER_BASE_PACKAGE/DEBIAN
+
+          cat > $HEADER_BASE_PACKAGE/DEBIAN/control << HEREDOC
+          Package: linux-libc-dev
+          Source: linux
+          Version: $PACKAGE_RELEASE
+          Section: devel
+          Priority: standard
+          Architecture: arm64
+          Depends: kmod, linux-base (>= 4.5ubuntu1~16.04.1)
+          Maintainer: None
+          Description: A experimental build package for ubuntu-desktop aarch64 running on opi-5.
+          HEREDOC
+
+          
+          chmod 755 $KERNEL_BASE_PACKAGE/DEBIAN/postinst
+          fakeroot dpkg-deb -z 4 -Z xz -b $KERNEL_BASE_PACKAGE 
+          fakeroot dpkg-deb -z 4 -Z xz -b $HEADER_BASE_PACKAGE 
+          cp *.deb ..
+          cd ..
+
+      - name: Upload a kernel
+        uses: actions/upload-artifact@v4.5.0
+        with:
+        # A file, directory or wildcard pattern that describes what to upload
+          name: kernel
+          path: arm64/*.deb
+          compression-level: 0
+          # The desired behavior if no files are found using the provided path.
+          if-no-files-found: error
+
+      - name: disk kernel
+        run: sudo umount arm64
+
+      - name: u-boot
+        run: |
+          sleep 2
+          sudo apt-get -y install  build-essential gcc-aarch64-linux-gnu bison \
+          qemu-user-static qemu-system-arm qemu-efi-aarch64 binfmt-support \
+          debootstrap flex libssl-dev bc rsync kmod cpio xz-utils fakeroot parted \
+          udev dosfstools uuid-runtime git-lfs device-tree-compiler python3 \
+          python-is-python3 fdisk bc debhelper python3-pyelftools python3-setuptools \
+          python3-pkg-resources swig libfdt-dev libpython3-dev gawk \
+          build-essential ncurses-dev xz-utils libssl-dev bc flex \
+          libelf-dev bison libgnutls28-dev
+          sudo mount -t tmpfs -o size=1G tmpfs arm64
+          cd arm64
+          git clone --depth 1 https://github.com/rockchip-linux/rkbin
+          DDR=`ls rkbin/bin/rk35/rk3588_ddr_lp4_2112MHz_lp5_2400MHz*.bin`
+          BL31=`ls rkbin/bin/rk35/rk3588_bl31*.elf`
+          git clone --depth 1 https://source.denx.de/u-boot/u-boot.git
+          cd u-boot
+          export BL31=../$BL31
+          export ROCKCHIP_TPL="../$DDR"
+          sed -i 's/scsi //' include/configs/rockchip-common.h
+          sed -i 's/mmc1/scsi mmc1/' include/configs/rockchip-common.h
+          echo "CONFIG_CMD_KASLRSEED=y" >> configs/orangepi-5-plus-rk3588_defconfig
+          echo "CONFIG_DM_RNG=y" >> configs/orangepi-5-plus-rk3588_defconfig
+          make orangepi-5-rk3588s_defconfig
+          make
+          cp u-boot-rockchip.bin ..
+          cp u-boot-rockchip.bin ../..
+
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v4.5.0
+        with:
+        # A file, directory or wildcard pattern that describes what to upload
+          name: u-boot
+          path: arm64/u-boot-rockchip.bin
+          compression-level: 0
+          # The desired behavior if no files are found using the provided path.
+          if-no-files-found: error
+
+
+      - name: disk u-boot
+        run: sudo umount arm64
+
+      - name: rootfs
+        run: |
+          sleep 2
+          sudo /bin/bash ./k-bootstrap.sh arm64
+          ls
+
+      - name: disk image
+        run: |
+          sleep 2
+          sudo /bin/bash ./disk_image.sh arm64 orangepi-5 rk3588s-orangepi-5
+
+      - name: Upload a diisk image Artifact
+        uses: actions/upload-artifact@v4.5.0
+        with:
+        # A file, directory or wildcard pattern that describes what to upload
+          name: disk-image
+          path: ubuntu-mainline*.xz
+          compression-level: 0
+          # The desired behavior if no files are found using the provided path.
+          if-no-files-found: error
