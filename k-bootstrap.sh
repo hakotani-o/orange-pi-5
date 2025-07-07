@@ -103,7 +103,7 @@ chroot $1 apt-get -y upgrade
 chroot $1 apt-get -y dist-upgrade
 chroot $1 apt-get -y install apt-utils software-properties-common
 mkdir $1/aaa
-chroot $1 apt-get -y install kubuntu-desktop kubuntu-restricted-extras kubuntu-restricted-addons plasma-wayland-protocols sddm linux-firmware snapd cloud-initramfs-growroot oem-config-gtk ubiquity-frontend-gtk aptdaemon grub-efi-arm64 initramfs-tools yaru-theme-unity yaru-theme-icon yaru-theme-gtk ubiquity-slideshow-kubuntu plymouth-theme-kubuntu-logo 
+chroot $1 apt-get -y install kubuntu-desktop sddm linux-firmware snapd cloud-initramfs-growroot oem-config-gtk ubiquity-frontend-gtk aptdaemon grub-efi-arm64 initramfs-tools yaru-theme-unity yaru-theme-icon yaru-theme-gtk ubiquity-slideshow-kubuntu plymouth-theme-kubuntu-logo 
 chroot $1 apt-get -y install  build-essential gcc-aarch64-linux-gnu bison \
 qemu-user-static qemu-system-arm qemu-efi-aarch64 binfmt-support \
 debootstrap flex libssl-dev bc rsync kmod cpio xz-utils fakeroot parted \
