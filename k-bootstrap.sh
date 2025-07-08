@@ -178,7 +178,7 @@ teardown_mountpoint $chroot_dir
 rm -f wget-log*
 rm -f $1/boot/*.old
 #tar the rootfs
-rootfs="overlay/ubuntu-mainline.rootfs.tar"
+rootfs="overlay/kubuntu-mainline.rootfs.tar"
 echo "rootfs=$rootfs" > overlay/rootfs
 cd $1
 rm -rf ../$rootfs
