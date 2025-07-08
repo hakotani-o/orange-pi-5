@@ -40,7 +40,7 @@ jobs:
           #head -5 linux-next/Makefile | sed 's# ##g' > ./tmp_var.txt
           head -5 linux/Makefile | sed 's# ##g' > ./tmp_var.txt
           . ./tmp_var.txt
-          EXTRAVERSION="${EXTRAVERSION}.-now"
+          EXTRAVERSION="${EXTRAVERSION}-now"
           export PACKAGE_RELEASE="$VERSION.$PATCHLEVEL.${SUBLEVEL}$EXTRAVERSION-rockchip"
           export DEBIAN_PACKAGE="kernel-$PACKAGE_RELEASE"
           export MAKE="make KERNELVERSION=$PACKAGE_RELEASE LOCALVERSION= localver-extra= PYTHON=python3"
