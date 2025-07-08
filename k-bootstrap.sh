@@ -56,7 +56,7 @@ mem_size=`free --giga|grep Mem|awk '{print $2}'`
 if [ $mem_size -gt 15 ]; then
 	mount -t tmpfs -o size=10G tmpfs $chroot_dir
 fi
-rm -f wget-log* overlay/kernel_version
+rm -f wget-log* ./kernel_version
 
 suite=plucky
 Uri="http://ports.ubuntu.com/ubuntu-ports"
@@ -178,8 +178,8 @@ teardown_mountpoint $chroot_dir
 rm -f wget-log*
 rm -f $1/boot/*.old
 #tar the rootfs
-rootfs="overlay/kubuntu-mainline.rootfs.tar"
-echo "rootfs=$rootfs" > overlay/rootfs
+rootfs="./kubuntu-mainline.rootfs.tar"
+echo "rootfs=$rootfs" > ./rootfs
 cd $1
 rm -rf ../$rootfs
 sync
