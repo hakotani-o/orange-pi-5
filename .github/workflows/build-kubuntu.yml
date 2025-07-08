@@ -1,4 +1,4 @@
-name: build-all
+name: build-kubuntu
 on: workflow_dispatch
 #workflow_dispatch
 #[push]
