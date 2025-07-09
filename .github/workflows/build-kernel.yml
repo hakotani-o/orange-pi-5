@@ -50,15 +50,27 @@ jobs:
           cd linux
           sed -i 's#opp-300000000#/* opp-300000000#' arch/arm64/boot/dts/rockchip/rk3588-opp.dtsi
           sed -i 's#opp-600000000#*/ opp-600000000#' arch/arm64/boot/dts/rockchip/rk3588-opp.dtsi
+          patch -p1 < ../../ARM-rockchip-fix-kernel-hang-during-smp-initialization.diff
           $MAKE -j$(nproc)  all modules dtbs
           export INSTALL_PATH="../${DEBIAN_PACKAGE}_arm64"
           export KERNEL_BASE_PACKAGE="${DEBIAN_PACKAGE}_arm64"
           rm -rf $INSTALL_PATH && mkdir -p $INSTALL_PATH
-          $MAKE install headers_install modules_install vdso_install dtbs_install INSTALL_MOD_STRIP=1 INSTALL_HDR_PATH=$INSTALL_PATH/usr/include INSTALL_MOD_PATH=$INSTALL_PATH INSTALL_FW_PATH=$INSTALL_PATH/lib/firmware/$PACKAGE_RELEASE INSTALL_DTBS_PATH=$INSTALL_PATH/boot/dtbs/$PACKAGE_RELEASE/device-tree
+          # header
+          export HEADER_DEBIAN_PACKAGE="linux-libc-dev-${PACKAGE_RELEASE%%~*}"
+          export HEADER_INSTALL_PATH="../${HEADER_DEBIAN_PACKAGE}_arm64"
+          export HEADER_BASE_PACKAGE="${HEADER_DEBIAN_PACKAGE}_arm64"
+          rm -rf $HEADER_INSTALL_PATH && mkdir -p $HEADER_INSTALL_PATH
+
+          echo "make 2"
+          $MAKE zinstall modules_install vdso_install dtbs_install INSTALL_MOD_STRIP=1 INSTALL_MOD_PATH=$INSTALL_PATH INSTALL_FW_PATH=$INSTALL_PATH/lib/firmware/$PACKAGE_RELEASE INSTALL_DTBS_PATH=$INSTALL_PATH/boot/dtbs/$PACKAGE_RELEASE/device-tree
+          echo "make 3"
+          $MAKE headers_install INSTALL_HDR_PATH=$HEADER_INSTALL_PATH/usr
           mv $INSTALL_PATH/vmlinu?-$PACKAGE_RELEASE $INSTALL_PATH/boot
           mv $INSTALL_PATH/config-$PACKAGE_RELEASE $INSTALL_PATH/boot
           mv $INSTALL_PATH/System.map-$PACKAGE_RELEASE $INSTALL_PATH/boot
-          mkdir -p $INSTALL_PATH/usr/src/linux-headers-$PACKAGE_RELEASE
+          mkdir -p $INSTALL_PATH/usr/src
+          ln -f -n -s /usr/src/linux-headers-$KERNEL_BASE_PACKAGE $INSTALL_PATH/lib/modules/$PACKAGE_RELEASE/build
+          
           cd ..
           mkdir -p $KERNEL_BASE_PACKAGE/DEBIAN/
           cat > $KERNEL_BASE_PACKAGE/DEBIAN/control << HEREDOC
@@ -69,18 +81,34 @@ jobs:
           Priority: standard
           Architecture: arm64
           Depends: kmod, linux-base (>= 4.5ubuntu1~16.04.1)
-          Homepage: https://kernel.org/
-          Rules-Requires-Root: no
-          Maintainer: Paper <kernel@papercube>
-          Description: A minimal kernel package for orange-pi-5.
+          Maintainer: none
+          Description: A experimental build package for ubuntu-desktop aarch64 running on opi-5.
           HEREDOC
           cat > $KERNEL_BASE_PACKAGE/DEBIAN/postinst << HEREDOC
           run-parts --report --exit-on-error --arg=$PACKAGE_RELEASE --arg=/boot/vmlinuz-$PACKAGE_RELEASE /etc/kernel/postinst.d
           HEREDOC
+          # HEADER
+          mkdir -p $HEADER_BASE_PACKAGE/DEBIAN
+
+          cat > $HEADER_BASE_PACKAGE/DEBIAN/control << HEREDOC
+          Package: linux-libc-dev
+          Source: linux
+          Version: $PACKAGE_RELEASE
+          Section: devel
+          Priority: standard
+          Architecture: arm64
+          Depends: kmod, linux-base (>= 4.5ubuntu1~16.04.1)
+          Maintainer: None
+          Description: A experimental build package for ubuntu-desktop aarch64 running on opi-5.
+          HEREDOC
+
+          
           chmod 755 $KERNEL_BASE_PACKAGE/DEBIAN/postinst
-          fakeroot dpkg-deb -z 4 -Z xz -b $KERNEL_BASE_PACKAGE ${KERNEL_BASE_PACKAGE}_arm64.deb
-          cp ${KERNEL_BASE_PACKAGE}_arm64.deb ..
+          fakeroot dpkg-deb -z 4 -Z xz -b $KERNEL_BASE_PACKAGE 
+          fakeroot dpkg-deb -z 4 -Z xz -b $HEADER_BASE_PACKAGE 
+          cp *.deb ..
           cd ..
+
                  
       - name: Upload a kernel
         uses: actions/upload-artifact@v4.5.0
