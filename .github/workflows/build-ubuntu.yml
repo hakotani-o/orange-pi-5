@@ -30,7 +30,7 @@ jobs:
           sudo mount -t tmpfs -o size=6G tmpfs arm64
           cd arm64
           #git clone --depth 1 https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
-          git clone --depth 1 https://github.com/torvalds/linux.git
+          git clone --depth 1 https://github.com/torvalds/linux.git -b v6.16
           #git clone --depth 1 https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git -b lv6.15.4
           #now=`cat linux-next/localversion-next|sed 's/-next-//'`
           #rm      linux-next/localversion-next
@@ -137,14 +137,13 @@ jobs:
           git clone --depth 1 https://github.com/rockchip-linux/rkbin
           DDR=`ls rkbin/bin/rk35/rk3588_ddr_lp4_2112MHz_lp5_2400MHz*.bin`
           BL31=`ls rkbin/bin/rk35/rk3588_bl31*.elf`
-          git clone --depth 1 https://github.com/u-boot/u-boot.git
+          git clone --depth 1 https://github.com/u-boot/u-boot.git -b v2025.04
           cd u-boot
           export BL31=../$BL31
           export ROCKCHIP_TPL="../$DDR"
           sed -i 's/scsi //' include/configs/rockchip-common.h
           sed -i 's/mmc1/scsi mmc1/' include/configs/rockchip-common.h
-          echo "CONFIG_CMD_KASLRSEED=y" >> configs/orangepi-5-plus-rk3588_defconfig
-          echo "CONFIG_DM_RNG=y" >> configs/orangepi-5-plus-rk3588_defconfig
+          sed -i 's/#ifndef CONFIG_XPL_BUILD/#ifndef CONFIG_XPL_BUILD\n\n# define BOOT_TARGET_DEVICES_SCSI(func)  func(SCSI, scsi, 0, 0, 1) func(SCSI, scsi, 0, 0, 2)/' include/configs/rockchip-common.h
           make orangepi-5-rk3588s_defconfig
           make
           cp u-boot-rockchip.bin ..
