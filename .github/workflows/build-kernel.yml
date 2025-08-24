@@ -49,8 +49,9 @@ jobs:
              PYTHON=python3"
           #cd linux-next
           cd linux
-          sed -i 's#opp-300000000#/* opp-300000000#' arch/arm64/boot/dts/rockchip/rk3588-opp.dtsi
-          sed -i 's#opp-600000000#*/ opp-600000000#' arch/arm64/boot/dts/rockchip/rk3588-opp.dtsi
+          #sed -i 's#opp-300000000#/* opp-300000000#' arch/arm64/boot/dts/rockchip/rk3588-opp.dtsi
+          #sed -i 's#opp-600000000#*/ opp-600000000#' arch/arm64/boot/dts/rockchip/rk3588-opp.dtsi
+          patch -p1 < ../../rk3588-orangepi-5-plus-sound.txt
           $MAKE -j$(nproc)  all modules dtbs
           export INSTALL_PATH="../${DEBIAN_PACKAGE}_arm64"
           export KERNEL_BASE_PACKAGE="${DEBIAN_PACKAGE}_arm64"
