@@ -48,7 +48,6 @@ jobs:
           cd linux
           sed -i 's#opp-300000000#/* opp-300000000#' arch/arm64/boot/dts/rockchip/rk3588-opp.dtsi
           sed -i 's#opp-600000000#*/ opp-600000000#' arch/arm64/boot/dts/rockchip/rk3588-opp.dtsi
-          patch -p1 < ../../rk3588-orangepi-5-plus-sound.txt
           echo "make 1"
           $MAKE -j$(nproc)  all modules dtbs
           
